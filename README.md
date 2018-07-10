@@ -11,8 +11,8 @@ Ps:Kinect2.0 SDK 'MapColorFrameToCameraSpace()' can get the (Xc,Yc,Zc) by color 
 
 ##Requirements
 
-Ubuntu16.04\<br> 
-ROS\<br> 
+Ubuntu16.04 \\<br> 
+ROS\\<br> 
 Python2.7\<br> 
 Kinect V2 => (OpenNi2 OpenCL OpenCV)\<br> 
 
@@ -33,7 +33,8 @@ v
 
 	install(TARGETS click_rgb
 	  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-	)'\<br> 
-	then 'make' Package iai_kinect2\<br> 
-6.'rosrun kinect2_viewer click_rgb'\<br> 
+	)'\<br>
+ 
+	then make Package iai_kinect2\<br> 
+6.		'rosrun kinect2_viewer click_rgb'\<br> 
 7.More information .[ROS下Kinect2的运用].(https://blog.csdn.net/sunbibei/article/details/51594824)
