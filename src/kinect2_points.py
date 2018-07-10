@@ -53,7 +53,7 @@ def ros_listener():
     # anonymous=True flag means that rospy will choose a unique
     # name for our 'listener' node so that multiple listeners can
     # run simultaneously.
-    rospy.init_node('Kinect_points', anonymous=True)
+    rospy.init_node('Kinect2_points', anonymous=True)
     rospy.Subscriber('/kinect2/sd/points', PointCloud2, callback)
     while flag==0:
         pass

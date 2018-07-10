@@ -30,7 +30,7 @@ def callback(data):
         cv2.waitKey(5)
 
 def kinect2_display():
-    rospy.init_node("kinect2_color", anonymous=True)
+    rospy.init_node("kinect2_depth", anonymous=True)
     # make a video_object and init the video object
     global count, bridge
     bridge = CvBridge()
