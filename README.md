@@ -1,9 +1,9 @@
 eye-to-hand calibration 
 =========================
-* Build a workpiece coordinate system and get 4 points like *(0,0,0)*,*(10,0,0)*,*(0,10,0)*,*(0,0,10)*.<br> 
+* Build a workpiece coordinate system and get 4 points like *(0,0,0)*, *(10,0,0)*, *(0,10,0)*, *(0,0,10)*.<br> 
 * Get coordinates in camera coordinate system *(Xc,Yc,Zc)* of the 4 points by using `rosrun kinect2_viewer click_rgb`.<br> 
-* Then calculate the camera to workpiece transformation matrix A with the 4 points informations.<br> 
-* Detect the target and get the pixs *(x1,y1)*,then use click_rgb.cpp get the camera coordunate (X1c,Y1c,Z1c).<br> 
+* Then calculate the camera to workpiece transformation matrix A with the 4 points informations(__Pay attention to the unit scale__).<br> 
+* Detect the target and get the pixs *(x1,y1)*,then use click_rgb.cpp get the camera coordunate *(X1c,Y1c,Z1c)*.<br> 
 
 ### click_rgb.cpp
 Get *(Xc,Yc,Zc)* by pixs *(x,y)* of color image and depth image .we can get the *(Xc,Yc,Zc)* from a cloud image with known pixs(x,y).<br> <br> 
@@ -37,7 +37,7 @@ Kinect V2 => (OpenNi2 OpenCL OpenCV)<br>
 	)
 ```
  
-	then `make` Package iai_kinect2<br> 
+	then **make** Package iai_kinect2<br> 
 * `rosrun kinect2_viewer click_rgb`<br>
 * More information [ROS下Kinect2的运用]	(https://blog.csdn.net/sunbibei/article/details/51594824)
 
