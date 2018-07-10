@@ -22,7 +22,7 @@ Kinect V2 => (OpenNi2 OpenCL OpenCV)<br>
 * Clone files to eye_to_hand/src directory<br> 
 * Install iai_kinect2 from .[code-iai/iai_kinect2].(https://github.com/code-iai/iai_kinect2)<br> 
 * Move the file `/eye_to_hand/src/calibration/2Dimg_to_3Dcamer/click_rgb.cpp` to  `/iai_kinect2/kinect2_viewer/src` <br> 
-* Add follow lines in<br> "/iai_kinect2/kinect2_viewer/CMakeLists.txt":<br> 
+* Add follow lines in<br> `/iai_kinect2/kinect2_viewer/CMakeLists.txt`:<br> 
 ```Bash
 	add_executable(click_rgb src/click_rgb.cpp)<br> 
 	target_link_libraries(click_rgb<br> 
