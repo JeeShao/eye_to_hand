@@ -7,17 +7,17 @@ eye-to-hand calibration
 
 ### click_rgb.cpp
 Get (Xc,Yc,Zc) by pixs(x,y) of color image and depth image .we can get the (Xc,Yc,Zc) from a cloud image with known pixs(x,y).<br> 
-'Ps':Kinect2.0 SDK 'MapColorFrameToCameraSpace()' can get the (Xc,Yc,Zc) by color frame and depthPoint frame at one pix .<br> 
+*Ps*:Kinect2.0 SDK 'MapColorFrameToCameraSpace()' can get the (Xc,Yc,Zc) by color frame and depthPoint frame at one pix .<br> 
 
 ## Requirements
 
-Ubuntu16.04 <br> 
-ROS<br> 
-Python2.7<br> 
-Kinect V2 => (OpenNi2 OpenCL OpenCV)<br> 
+Ubuntu16.04
+ROS
+Python2.7
+Kinect V2 => (OpenNi2 OpenCL OpenCV)
 
 ## Usage
-v
+
 1.Create ROS package as eye_to_hand <br> 
 2.Clone files to eye_to_hand/src directory<br> 
 3.Install iai_kinect2 from .[code-iai/iai_kinect2].(https://github.com/code-iai/iai_kinect2)<br> 
@@ -36,5 +36,5 @@ v
 	)'<br>
  
 	then make Package iai_kinect2<br> 
-6.'rosrun kinect2_viewer click_rgb'
+6.		'rosrun kinect2_viewer click_rgb'<br>
 7.More information .[ROS下Kinect2的运用].(https://blog.csdn.net/sunbibei/article/details/51594824)
