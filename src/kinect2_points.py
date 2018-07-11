@@ -24,17 +24,25 @@ def saveCloud_txt(fileName):
    return f
 
 def callback(data):
-    print("____________________\n",data)
+    # print("____________________\n",data)
     global flag
     rospy.loginfo('Data acquiring')
-    pc = pc2.read_points(data,skip_nans=True)
+    pc = pc2.read_points(data,field_names=("x", "y", "z"),skip_nans=True,uvs=[[100,10]])  #pc2.read_points(cloud, skip_nans=True, field_names=("x", "y", "z"))
+
     int_data=list(pc)
+    print("****",int_data)
+
     for P in int_data:
-        x=P[0]
-        z=-P[1]
-        y=P[2]
+        # x=P[0]
+        # z=-P[1]
+        # y=P[2]
+        x = P[0]
+        y = P[1]
+        z = P[2]
+        #将float转为float 以进行位操作
         s=struct.pack('>f', P[3])
         i=struct.unpack('>l',s)[0]
+        #可以取回float值
         pack = ctypes.c_uint32(i).value
         R=(pack & 0x00FF0000)>> 16
         G=(pack & 0x0000FF00)>> 8
@@ -54,7 +62,7 @@ def ros_listener():
     # name for our 'listener' node so that multiple listeners can
     # run simultaneously.
     rospy.init_node('Kinect2_points', anonymous=True)
-    rospy.Subscriber('/kinect2/sd/points', PointCloud2, callback)
+    rospy.Subscriber('/kinect2/qhd/points', PointCloud2, callback)
     while flag==0:
         pass
     nop_op = 0
