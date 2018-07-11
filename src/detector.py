@@ -9,6 +9,7 @@
 '''
 import numpy as np
 import rospy
+import cv2
 from std_msgs.msg import String
 from sensor_msgs.msg import Image,PointCloud2
 from cv_bridge import CvBridge, CvBridgeError
@@ -43,6 +44,9 @@ class Detector():
     def detect(self,image):
         try:
             image = self.bridge.imgmsg_to_cv2(image, desired_encoding='bgr8')
+            cv2.imshow("image",image)
+            cv2.waitKey(1000)
+            cv2.destroyAllWindows()
         except CvBridgeError as e:
             print(e)
         print(11111111)
