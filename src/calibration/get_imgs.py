@@ -31,7 +31,7 @@ def kinect2_display():
     # make a video_object and init the video object
     bridge = CvBridge()
 
-    rospy.Subscriber('/kinect2/hd/image_color', Image, get_imgs)
+    rospy.Subscriber('/kinect2/qhd/image_color', Image, get_imgs)
     rospy.spin()
 
 
