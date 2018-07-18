@@ -42,6 +42,8 @@ class Detector():
     :return: [x,y] => 目标像素点位置
     '''
     def detect(self,image):
+        if self.target_found:
+            return
         try:
             image = self.bridge.imgmsg_to_cv2(image, desired_encoding='bgr8')
             # image = cv2.imread('13.jpg')
@@ -87,7 +89,7 @@ class Detector():
             box = cv2.boxPoints(rect)
             box = np.int0(box)
             # cv2.drawContours(color, [box], 0, (0, 0, 255), 2)
-        # cv2.imwrite("res.jpg", color)
+        cv2.imwrite("res.jpg", color)
         print(self.points)
         ################
 
@@ -111,6 +113,10 @@ class Detector():
                 # pc = pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True,uvs=[[self.target_x, self.target_y]])
                 pc = pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True,uvs=[i])
                 int_data = list(pc) #[(x,y,z)]
+                # while not int_data:
+                #     i = [j+1 for j in i]
+                #     pc = pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True, uvs=[i])
+                #     int_data = list(pc)  # [(x,y,z)]
                 if int_data:
                     print("Camera_Position:", int_data)
                     self.camera_position[:3] = list(int_data[0])
