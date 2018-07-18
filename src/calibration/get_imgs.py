@@ -26,7 +26,7 @@ def get_imgs(data):
 
 def kinect2_display():
     global i, bridge
-    i = 1
+    i = 30
     rospy.init_node("kinect2_color", anonymous=True)
     # make a video_object and init the video object
     bridge = CvBridge()
