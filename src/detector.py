@@ -32,9 +32,10 @@ class Detector():
         self.final_position = np.zeros((1,3),dtype=np.float32) #最终坐标 (mm)
         self.res = []  #最终三维坐标点集
         self.target_found = False # 1=>检测到目标
+        self.key = 0
 
         self.bridge = CvBridge()
-        self.rate = rospy.Rate(1.0) #发布频率
+        self.rate = rospy.Rate(10) #发布频率
 
     '''
     目标检测
@@ -42,6 +43,8 @@ class Detector():
     :return: [x,y] => 目标像素点位置
     '''
     def detect(self,image):
+        if not self.key:
+            return
         if self.target_found:
             return
         try:
@@ -96,6 +99,7 @@ class Detector():
         #若检测到目标
         if len(self.points):
             self.target_found = True
+            # rospy.sleep(1)
     '''
     坐标变换 （像素坐标(x,y) => 相机坐标系下3D坐标(X,Y,Z)）
     ####1.获取到点云图像后立马传给detect(),在detect()中处坐标变换
@@ -104,6 +108,8 @@ class Detector():
     :return: [X,Y,Z]
     '''
     def transform(self,point_cloud):
+        if not self.key:
+            return
         print(22222222)
         self.res = []
         if self.target_found:#已检测到目标
@@ -118,17 +124,18 @@ class Detector():
                 #     pc = pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True, uvs=[i])
                 #     int_data = list(pc)  # [(x,y,z)]
                 if int_data:
-                    print("Camera_Position:", int_data)
+                    # print("Camera_Position:", int_data)
                     self.camera_position[:3] = list(int_data[0])
                     self.workpiece_position = 1000 * self.camera_position.dot(self.martix.T)  #(x,y,z)*A = (X,Y,Z)  (注意单位换算)
                     self.final_position = self.workpiece_position[0:3]
-                    print("****Final****:",self.final_position)
+                    # print("****Final****:",self.final_position)
                     self.res.append(self.final_position)
                 else:
                     print("坐标转换失败！")
             self.target_found = False
             print("###########",self.res)
     def start(self,req):
+        self.key = 1
         if req:
             a = ''
             rospy.wait_for_message('/kinect2/qhd/image_color_rect', Image)  # 等待可用相机信息
@@ -142,6 +149,7 @@ class Detector():
                 b = [str(int(i)) for i in l]
                 # print('-'.join(b))
                 a = a + "|" + '-'.join(b)
+            self.key=0
             return a
 
 if __name__ == '__main__':
