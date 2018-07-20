@@ -23,10 +23,13 @@ class Detector():
     def __init__(self):
         rospy.init_node('detector', anonymous=True)
         rospy.Service('detector', GetPosition, self.start)
-        self.points = [[12,33],[36,55]]  #像素坐标点集
+        self.points = [[531,416]]  #像素坐标点集
         self.target_x = 0  #像素坐标
         self.target_y = 0
-        self.martix = np.random.rand(4,4) #np.zeros((4,4))  #4×4转换矩阵(相机=>工件)
+        self.martix = np.array([[-0.0716446341, -0.993201768,  0.198063780,  81.8537275],
+                                [-1.02897070, 0.0424956250,  0.0130262971 , 40.4238031],
+                                [ 0.0483681360, -0.0746342760 ,-1.02790297 , 675.738095],
+                                [0, 0 ,0 , 1.0]],dtype=np.float32)#np.zeros((4,4))  #4×4转换矩阵(相机=>工件)
         self.camera_position = np.array([0,0,0,1],dtype=np.float32) #1×4相机坐标系下坐标(m)
         self.workpiece_position = np.array([0,0,0,1],dtype=np.float32)  #1×4工件坐标系下坐标(mm)
         self.final_position = np.zeros((1,3),dtype=np.float32) #最终坐标 (mm)
@@ -49,16 +52,17 @@ class Detector():
             return
         try:
             image = self.bridge.imgmsg_to_cv2(image, desired_encoding='bgr8')
+            board = image[100:416, 210:511]
+            cv2.imshow("board",board)
+            cv2.waitKey(0)
             # image = cv2.imread('13.jpg')
-            # cv2.imshow("image",image)
-            # cv2.waitKey(1000)
-            cv2.destroyAllWindows()
+            # cv2.destroyAllWindows()
         except CvBridgeError as e:
             print(e)
         print(11111111)
         ###############
 
-        self.points = []
+        self.points = [[527,341]]
         img = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
         ret, th1 = cv2.threshold(img, 180, 255, cv2.THRESH_BINARY_INV)
@@ -85,7 +89,7 @@ class Detector():
             # 矩形
             x, y, w, h = cv2.boundingRect(contours[i])
             if w > 100 and h > 100:
-                self.points.append([x + w / 2, y + h / 2])
+                # self.points.append([x + w / 2, y + h / 2])
                 cv2.rectangle(color, (x, y), (x + w, y + h), (255, 0, 0), 3)
             # 最小外接矩形
             rect = cv2.minAreaRect(contours[i])
@@ -124,9 +128,14 @@ class Detector():
                 #     pc = pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True, uvs=[i])
                 #     int_data = list(pc)  # [(x,y,z)]
                 if int_data:
-                    # print("Camera_Position:", int_data)
+                    print("Camera_Position:", int_data)
                     self.camera_position[:3] = list(int_data[0])
-                    self.workpiece_position = 1000 * self.camera_position.dot(self.martix.T)  #(x,y,z)*A = (X,Y,Z)  (注意单位换算)
+                    self.camera_position[:3] = self.camera_position[:3]*1000
+                    self.workpiece_position = np.dot(self.martix,self.camera_position)  #A*(x,y,z) = (X,Y,Z)  (注意单位换算)
+
+                    print(self.workpiece_position)
+                    self.workpiece_position[0] = self.workpiece_position[0]-17
+                    self.workpiece_position[2] = self.workpiece_position[2]+1
                     self.final_position = self.workpiece_position[0:3]
                     # print("****Final****:",self.final_position)
                     self.res.append(self.final_position)
@@ -148,7 +157,7 @@ class Detector():
             for l in self.res:
                 b = [str(int(i)) for i in l]
                 # print('-'.join(b))
-                a = a + "|" + '-'.join(b)
+                a = a + "|" + ':'.join(b)
             self.key=0
             return a
 
