@@ -23,7 +23,7 @@ class Detector():
     def __init__(self):
         rospy.init_node('detector', anonymous=True)
         rospy.Service('detector', GetPosition, self.start)
-        self.points = [[531,416]]  #像素坐标点集
+        self.points = []  #像素坐标点集
         self.target_x = 0  #像素坐标
         self.target_y = 0
         self.martix = np.array([[-0.0716446341, -0.993201768,  0.198063780,  81.8537275],
@@ -51,10 +51,10 @@ class Detector():
         if self.target_found:
             return
         try:
-            image = self.bridge.imgmsg_to_cv2(image, desired_encoding='bgr8')
-            board = image[100:416, 210:511]
-            cv2.imshow("board",board)
-            cv2.waitKey(0)
+            org = self.bridge.imgmsg_to_cv2(image, desired_encoding='bgr8')
+            image = org[100:416, 210:511]
+            # cv2.imshow("board",image)
+            # cv2.waitKey(0)
             # image = cv2.imread('13.jpg')
             # cv2.destroyAllWindows()
         except CvBridgeError as e:
@@ -62,10 +62,12 @@ class Detector():
         print(11111111)
         ###############
 
-        self.points = [[527,341]]
+        self.points = []
         img = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
-        ret, th1 = cv2.threshold(img, 180, 255, cv2.THRESH_BINARY_INV)
+        ret, th1 = cv2.threshold(img, 118, 255, cv2.THRESH_BINARY)
+        cv2.imshow('q',th1)
+        cv2.waitKey(0)
         # th1 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,5,2)
         th2 = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 5, 2)
         # cv2.imshow("th1", th1)
@@ -75,28 +77,33 @@ class Detector():
         closed = cv2.morphologyEx(th1, cv2.MORPH_CLOSE, kernel)
         # cv2.imshow("Close", closed);
 
-        img1 = closed.copy()
+        kernel0 = np.ones((5, 5), np.uint8)
+        erosion = cv2.dilate(closed, kernel0, iterations=1)
+
+        img1 = erosion.copy()
         img1 = cv2.GaussianBlur(img1, (3, 3), 0)  # 高斯平滑
         # img1 = cv2.medianBlur(img1,5)  #中通滤波
-        img1_canny = cv2.Canny(img1, 200, 300, apertureSize=3)  # 边缘检测
+        img1_canny = cv2.Canny(img1, 100, 150, apertureSize=3)  # 边缘检测
         # cv2.imwrite("guass.jpg", img1_canny)
 
         # cv2.imshow("guass", img1_canny)
         image, contours, hierarchy = cv2.findContours(img1_canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # 轮廓检测
-        color = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-
+        # color = cv2.cvtColor(org, cv2.COLOR_GRAY2BGR)
+        color = org.copy()
         for i in range(0, len(contours)):
             # 矩形
             x, y, w, h = cv2.boundingRect(contours[i])
-            if w > 100 and h > 100:
-                # self.points.append([x + w / 2, y + h / 2])
-                cv2.rectangle(color, (x, y), (x + w, y + h), (255, 0, 0), 3)
-            # 最小外接矩形
-            rect = cv2.minAreaRect(contours[i])
-            box = cv2.boxPoints(rect)
-            box = np.int0(box)
-            # cv2.drawContours(color, [box], 0, (0, 0, 255), 2)
+            if w > 30 and h > 0 and x+w<290:
+                self.points.append([x+210 + w / 2, y+100 + h / 2])
+                cv2.rectangle(color, (x+210 , y+100), (x +210 + w, y +100+ h), (255, 0, 0), 3)
+                cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 3)
+                # 最小外接矩形
+                # rect = cv2.minAreaRect(contours[i])
+                # box = cv2.boxPoints(rect)
+                # box = np.int0(box)
+                # cv2.drawContours(color, [box], 0, (0, 0, 255), 2)
         cv2.imwrite("res.jpg", color)
+        cv2.imwrite("image.jpg", image)
         print(self.points)
         ################
 

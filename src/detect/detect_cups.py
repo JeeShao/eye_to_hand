@@ -11,7 +11,7 @@ import os
 
 points = []
 
-img = cv2.imread("imgs/13.jpg",0)
+img = cv2.imread("./imgs/13.jpg",0)
 
 ret,th1 = cv2.threshold(img,180,255,cv2.THRESH_BINARY_INV)
 # th1 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,5,2)
